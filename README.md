@@ -1,1 +1,1 @@
-# PRINTER STATUS CONTROLLER
+# Printer Status LED Controller
