@@ -27,7 +27,6 @@
     
 */
 
-// #include <avr/io.h>                        // try to remove this
 #include <avr/interrupt.h>
 
 const byte INT_PIN   = PB4;
@@ -45,17 +44,21 @@ void setup() {
       GIMSK |= (1 << PCIE);                       // Enable global interrupt mask
       PCMSK |= (1 << PCINT4);                     // Ebable interupt on INT pin
   sei();                                          // Enable global interrupts
+  update_status ();
 }
 
 void loop() {}
 
-ISR (PCINT0_vect) {                              // ISR interrupt for INT PIN (PB4, PCINT4)
-// if (digitalRead(INT_PIN) == HIGH) {    // try to remove == HIGH
-  if (digitalRead(INT_PIN)) {                    // If printer is ready (INT PIN is HIGH)
-      digitalWrite(LED_PIN_2, LOW);              // Turn on STATUS LED in one direction to indicate READY status
+void update_status () {
+  if (digitalRead(INT_PIN)) {                     // If printer is ready (INT PIN is HIGH)
+      digitalWrite(LED_PIN_2, LOW);               // Turn on STATUS LED in one direction to indicate READY status
       digitalWrite(LED_PIN, HIGH);
-  } else {                                       // Else printer is not ready (INT PIN is LOW)
-      digitalWrite(LED_PIN, LOW);                // Turn on STATUS LED in the other direction to indicate PWR ON status
+  } else {                                        // Else printer is not ready (INT PIN is LOW)
+      digitalWrite(LED_PIN, LOW);                 // Turn on STATUS LED in the other direction to indicate PWR ON status
       digitalWrite(LED_PIN_2, HIGH);
   }
+}
+
+ISR (PCINT0_vect) {                               // ISR interrupt for INT PIN (PB4, PCINT4)
+  update_status ();
 }
